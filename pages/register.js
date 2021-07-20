@@ -15,24 +15,30 @@ export default function RegForm() {
 
     async function handleSubmit(event) {
         event.preventDefault();
-                            
-            const res = await fetch('/api/user-reg',
+        
+        let res = '';
+        if (event.target.password.value === event.target.repeatPassword.value) {
+            res = await fetch('/api/user-reg',
             {
-                body: JSON.stringify({
-                email: event.target.email.value,
-                first: event.target.first.value,
-                last: event.target.last.value,
-                role: event.target.role.value
-            }),
+                body: JSON.stringify(
+                {
+                    email: event.target.email.value,
+                    first: event.target.first.value,
+                    last: event.target.last.value,
+                    role: event.target.role.value,
+                    password: event.target.password.value
+                }),
 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        })
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            });
+        } else {
+            alert("Passwords must match");
+        }
 
-        result = await res.json()
-        console.log(result);
+        
     }
 
     
@@ -57,7 +63,7 @@ export default function RegForm() {
                     </label>
                     <label>
                         Repeat Password:
-                        <input name='repeatPass' type='password' value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
+                        <input name='repeatPassword' type='password' value={repeatPassword} onChange={(e) => setRepeatPassword(e.target.value)} />
                     </label>
                     <div value={role} onChange={(e) => setRole(e.target.value)}>
                         Role: 
