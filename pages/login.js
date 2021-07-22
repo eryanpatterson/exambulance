@@ -47,11 +47,11 @@ export default function Login() {
       <form onSubmit={handleSubmit} errorMessage={errorMsg} >
         <label>
           Email:
-          <input name='email' type='email' value={email} onChange={setEmail} />
+          <input name='email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
         </label>
         <label>
           Password:
-          <input name='password' type='password' value={password} onChange={setPassword} />
+          <input name='password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
         </label>
         <input type="submit" value="Login" />
       </form>      
