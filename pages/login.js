@@ -27,15 +27,19 @@ export default function Login() {
         <title>Login</title>
       </Head>      
       <form onSubmit={handleSubmit}>
-        <label>
-          Email:
-          <input name='email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
-        </label>
-        <label>
+        <div>
+          <label>
+            Email:
+            <input name='email' type='email' value={email} onChange={(e) => setEmail(e.target.value)} />
+          </label>
+        </div>
+        <div>  
+          <label>
           Password:
           <input name='password' type='password' value={password} onChange={(e) => setPassword(e.target.value)} />
-        </label>
-        <input type="submit" value="Login" />
+          </label>
+        </div>
+        <div><input type="submit" value="Login" /></div>
       </form>      
       <div>
         No account yet? 

@@ -10,7 +10,7 @@ export default async (req, res) => {
         // Hashing password
         const saltRounds = 10;
         const plainText = data.password;
-        console.log(plainText);
+        
         
         const key = { "email": data.email };
         
@@ -30,9 +30,9 @@ export default async (req, res) => {
                 };
 
                  
-                const resp = db.collection('users').insertOne(user);
+                try {const resp = db.collection('users').insertOne(user);
 
-                res.redirect(200, '/')
+                    res.redirect('/login') } catch {res.redirect('/register')}
             });
         }
 
