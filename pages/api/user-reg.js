@@ -31,6 +31,8 @@ export default async (req, res) => {
 
                  
                 const resp = db.collection('users').insertOne(user);
+
+                res.redirect(200, '/')
             });
         }
 
