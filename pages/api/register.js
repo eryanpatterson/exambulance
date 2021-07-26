@@ -1,7 +1,13 @@
-import { connectToDatabase } from "../../util/mongodb";
+//import { connectToDatabase } from "../../util/mongodb";
+import { createUser } from "../../lib/user";
 const bcrypt = require('bcrypt');
-
-export default async (req, res) => {
+ 
+export default async function register(req, res) {
+    if (req.method === "POST") {
+        await createUser(req.body);
+    }
+}
+/*export default async (req, res) => {
     if (req.method === "POST") {
         // Connecting to mongodb and getting data from registration page
         const { db } = await connectToDatabase();
@@ -37,4 +43,4 @@ export default async (req, res) => {
         }
 
     }
-};
+}; */

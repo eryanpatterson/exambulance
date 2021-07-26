@@ -18,7 +18,7 @@ export default function RegForm() {
         
         let res = '';
         if (event.target.password.value === event.target.repeatPassword.value) {
-            res = await fetch('/api/user-reg',
+            res = await fetch('/api/register',
             {
                 body: JSON.stringify(
                 {
