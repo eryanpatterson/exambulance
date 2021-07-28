@@ -1,5 +1,5 @@
 import passport from 'passport';
-import nextConnect from 'next-connect';
+import nc from 'next-connect';
 import { localStrategy } from '../../lib/password-local'
 import { setLoginSession } from '../../lib/auth'
 
@@ -13,19 +13,20 @@ const authenticate = (method, req, res) =>
             } else {
                 resolve(token)
             }
-        })(req, res)
+        }) 
+        (req, res)
     })
 
     passport.use(localStrategy)
 
-    export default nextConnect()
+    export default nc()
         .use(passport.initialize())
         .post(async (req, res) => {
             try {
                 const user = await authenticate('local', req, res)
 
                 const session = { ...user }
-
+                console.log('heh')
                 await setLoginSession(res, session)
 
                 res.status(200).send({ done: true })

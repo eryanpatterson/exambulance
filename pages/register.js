@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import Layout from "../components/layout";
 import Link from "next/link";
+import Router from "next/router";
 
 
 export default function RegForm() {
@@ -33,7 +34,14 @@ export default function RegForm() {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            });
+            }) 
+
+            if (res.status === 200) {
+                Router.push('/login')
+            } else {
+                throw new Error(await res.text())
+            }
+
         } else {
             alert("Passwords must match");
         }

@@ -7,7 +7,7 @@ import { useUser } from '../lib/hooks'
 
 
 const Login = () => {
-  useUser({ redirectTo: '/', redirectIfFound: true })
+  useUser({ redirectTo: '/profile', redirectIfFound: true })
 
   const [errorMsg, setErrorMsg] = useState('')
   const [email, setEmail] = useState('')
@@ -30,7 +30,7 @@ const Login = () => {
         body: JSON.stringify(body),
       })
       if (res.status === 200) {
-        Router.push('/')
+        Router.push('/profile')
       } else {
         throw new Error(await res.text())
       }
