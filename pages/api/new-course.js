@@ -1,6 +1,6 @@
 import { connectToDatabase } from "../../util/mongodb";
 
-export default async function addACourse(req, res) {
+export default async function newCourse(req, res) {
     const { db } = await connectToDatabase();
 
     const data = req.body
