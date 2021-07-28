@@ -1,16 +1,35 @@
-import { useUser } from "../lib/hooks";
 import Layout from "../components/layout";
+import { getLoginSession } from "../lib/auth";
+import { findUser } from "../lib/user";
+import Router from "next/router";
 
-
-const Profile = () => {
-    const user = useUser({ redirectTo: '/login'})
+export async function getServerSideProps(context) {
+    const session = await getLoginSession(context.req)
+    const user = (session && (await findUser(session.email))) ?? null
     
+    if (user == null) {
+        Router.push('/login')
+    }
+
+    return { props: { user } }
+}
+
+function Profile({ user }) {
+    //const user =  useUser({ redirectTo: '/login'})
+       
+    let greeting = ''
+
+    if (user.role === 'instructor') {
+        greeting = 'Welcome, Professor ' + user.last
+    } else {
+        greeting = 'Welcome, ' + user.first
+    }
     return (
         <Layout>
             <h1>My Exambulance</h1>
             {user && (
                 <div>
-                    <p>Hello, {user.first}!</p>
+                    <p>{greeting}!</p>
                 </div>
             )}
             <button>
@@ -20,4 +39,4 @@ const Profile = () => {
     )
 }
 
-export default Profile;
+export default Profile
