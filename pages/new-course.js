@@ -2,18 +2,32 @@ import Router from "next/router";
 import Layout from "../components/layout";
 import { useState } from "react";
 import Link from "next/link";
+import { getLoginSession } from "../lib/auth";
+import { findUser } from "../lib/user";
 
-export default function addCourse() {
+export async function getServerSideProps(context) {
+    const session = await getLoginSession(context.req)
+    const user = (session && (await findUser(session.email))) ?? null
+    
+    if (user == null) {
+        Router.push('/login')
+    }
+
+    return { props: { user } }
+}
+
+export default function addCourse( {user} ) {
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
 
     async function handleSubmit(e) {
         e.preventDefault();
-
+        
         const newCourse = await fetch('/api/new-course', 
         {
                 body: JSON.stringify(
                 {
+                    instructor: user.email,
                     name: e.target.name.value,
                     code: e.target.code.value
                 }),
@@ -22,7 +36,7 @@ export default function addCourse() {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-        })
+        }) 
 
         if (newCourse.status === 200) {
             Router.push('/profile')
@@ -36,15 +50,17 @@ export default function addCourse() {
             <h1>New Course</h1>
             <form onSubmit={handleSubmit}>
                 <label>
-                    Course Name:
+                    Course Name: {' '}
                     <input name="name" type="text" value={name} onChange={(e) =>setName(e.target.value)} />
+                    {'  '}
                 </label>
                 <label>
-                    Course Code:
+                    Course Code: {' '}
                     <input name="code" type="text" value={code} onChange={(e) =>
                     setCode(e.target.value)} />
+                    {'  '}
                 </label>
-                <input type="submit" value="Add Course" />
+                <div> <input type="submit" value="Add Course" /> </div>
             </form>
             <Link href='/profile'><a>Go Back</a></Link>
         </Layout>
