@@ -1,25 +1,40 @@
 import Layout from "../components/layout";
 import { getLoginSession } from "../lib/auth";
 import { findUser } from "../lib/user";
-import Router from "next/router";
 import Link from "next/link";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
-    
-    if (user == null) {
-        Router.push('/login')
-    }
 
+    if (user === null) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/login'
+            }
+        }
+    }
+    
     return { props: { user } }
 }
 
 function Profile({ user }) {
-    //const user =  useUser({ redirectTo: '/login'})
-       
+    
+    const myCourses = fetch('api/course-list', 
+        {
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        })
+        .then((res) => res.json())
+        .then((data) => { return { courses: data.courses}})
+        
+    console.log(myCourses)
     let greeting = ''
-
+    
     if (user.role === 'instructor') {
         greeting = 'Welcome, Professor ' + user.last
     } else {
@@ -39,6 +54,7 @@ function Profile({ user }) {
                 <button>
                     <Link href='/new-course'><a>New Course</a></Link>
                 </button>
+                <div></div>
             </div>
             )}
         </Layout>
