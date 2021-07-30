@@ -1,12 +1,12 @@
 import Layout from "../components/layout";
 import { getLoginSession } from "../lib/auth";
-import { findUser } from "../lib/user";
+import { findCourses, findUser } from "../lib/user";
 import Link from "next/link";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
-
+    const courses = (session && (await findCourses(session))) ?? null
     if (user === null) {
         return {
             redirect: {
@@ -16,23 +16,23 @@ export async function getServerSideProps(context) {
         }
     }
     
-    return { props: { user } }
+    return { props: { user, courses } }
 }
 
-function Profile({ user }) {
+function Profile({ user, courses }) {
     
-    const myCourses = fetch('api/course-list', 
-        {
-            method: 'POST', 
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            }
-        })
-        .then((res) => res.json())
-        .then((data) => { return { courses: data.courses}})
+    // const myCourses = fetch('api/course-list', 
+    //     {
+    //         method: 'POST', 
+    //         headers: {
+    //             'Content-Type': 'application/json',
+    //             'Accept': 'application/json'
+    //         }
+    //     })
+    //     .then((res) => res.json())
+    //     .then((data) => { return { courses: data.courses}})
         
-    console.log(myCourses)
+    console.log(courses)
     let greeting = ''
     
     if (user.role === 'instructor') {
