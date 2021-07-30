@@ -21,18 +21,8 @@ export async function getServerSideProps(context) {
 
 function Profile({ user, courses }) {
     
-    // const myCourses = fetch('api/course-list', 
-    //     {
-    //         method: 'POST', 
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'Accept': 'application/json'
-    //         }
-    //     })
-    //     .then((res) => res.json())
-    //     .then((data) => { return { courses: data.courses}})
-        
-    console.log(courses)
+    const courseList = courses.map(obj => (<li><strong>{obj.code}</strong>  {obj.name}</li>) )
+
     let greeting = ''
     
     if (user.role === 'instructor') {
@@ -54,7 +44,7 @@ function Profile({ user, courses }) {
                 <button>
                     <Link href='/new-course'><a>New Course</a></Link>
                 </button>
-                <div></div>
+                <div>{courseList}</div>
             </div>
             )}
         </Layout>
