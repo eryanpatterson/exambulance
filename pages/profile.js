@@ -6,7 +6,7 @@ import Link from "next/link";
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
-    const courses = (session && (await findCourses(session))) ?? null
+    const courses = (session && (await findCourses('instructor', session.email))) ?? null
     if (user === null) {
         return {
             redirect: {
@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
 
 function Profile({ user, courses }) {
     
-    const courseList = courses.map(obj => (<li><strong>{obj.code}</strong>  {obj.name}</li>) )
+    const courseList = courses.map(obj => (<li><Link href={'/courses/' + obj.code}><a><strong>{obj.code}</strong></a></Link> {obj.name}</li>) )
 
     let greeting = ''
     
