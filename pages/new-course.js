@@ -28,8 +28,8 @@ export default function addCourse( {user} ) {
                 body: JSON.stringify(
                 {
                     instructor: user.email,
-                    name: e.target.name.value,
-                    code: e.target.code.value
+                    name: name,
+                    code: code
                 }),
 
                 method: 'POST',
