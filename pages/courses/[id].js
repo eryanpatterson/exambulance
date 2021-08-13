@@ -24,7 +24,7 @@ export async function getServerSideProps({ params }) {
 }
 
 
-export default async function Course( { course } ) {
+export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
     const [answers, setAnswers] = useState(['']);
 
