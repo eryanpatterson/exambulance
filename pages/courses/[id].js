@@ -26,13 +26,36 @@ export async function getServerSideProps({ params }) {
 
 export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
-    const [answers, setAnswers] = useState(['']);
+    const [numOfAnswers, setNum] = useState(1);
+    const [answerInputs, setInputs] = useState('');
+    const answers = [''];
+
+
+    
+    function handleChange(e) {
+        setNum(numOfAnswers + 1)
+
+        const answersPossible = [];
+        
+        for (let i = 0; i < numOfAnswers; i++) {
+            answersPossible.push({ name: "Answer No. " + (i+2)})
+        }
+
+        setInputs(answersPossible.map(({ name }) => (
+            <label>
+                {name}: {' '}
+                <input name={name} type="text" />
+                <br />
+            </label>
+        ))
+        )
+    }
 
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
-    
+
     async function handleSubmit(e) {
     e.preventDefault();
-         
+
     const addPrompt = await fetch('/api/prompt',
             {
                 body: JSON.stringify(
@@ -62,25 +85,12 @@ export default function Course( { course } ) {
                         {' '}
                     </label>
                     <label>
-                        A: {' '}
-                        <input name="a" type="text" onChange={(e) => answers.push(e.target.value)} />
-                        {' '}
-                    </label>
-                    <label>
-                        B: {' '}
-                        <input name="a" type="text" onChange={(e) => answers.push(e.target.value)} />
-                        {' '}
-                    </label>
-                    <label>
-                        C: {' '}
-                        <input name="a" type="text" onChange={(e) => answers.push(e.target.value)} />
-                        {' '}
-                    </label>
-                    <label>
-                        D: {' '}
-                        <input name="a" type="text" onChange={(e) => answers.push(e.target.value)} />
-                        {' '}
-                    </label>
+                        Answer No. 1: {' '}
+                        <input name="Answer No. 1" type="text" />
+                    </label> 
+                    <input name="numOfAnswers" type="button" value="+" onClick={handleChange} />
+                    <br />
+                    {answerInputs} 
                     <input type="submit" value="Add Prompt" />
                 </form>
             </div>
