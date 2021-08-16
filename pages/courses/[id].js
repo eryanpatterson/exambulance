@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react";
 
 export async function getServerSideProps({ params }) {
-    console.log(params)
+    
     let course = ''
     
     try { 
@@ -14,8 +14,7 @@ export async function getServerSideProps({ params }) {
     } catch (error) {
         console.error(error);
     }
-    console.log(course)
-    //const courseInfo = await course.map(x => <div><h1>{x.code}</h1> <h2>{x.name}</h2> <p> This is a sample course description.</p></div>)
+    
     return {
         props: {
             course
@@ -28,35 +27,38 @@ export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
     const [numOfAnswers, setNum] = useState(1);
     const [answerInputs, setInputs] = useState('');
-    const answers = [''];
+    const answers = [];
 
-
+    const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
     
     function handleChange(e) {
-        setNum(numOfAnswers + 1)
+        
 
         const answersPossible = [];
         
         for (let i = 0; i < numOfAnswers; i++) {
-            answersPossible.push({ name: "Answer No. " + (i+2)})
+            answersPossible.push({ label: 'Answer ' + (i+2), name: 'Ans' + (i+2)})
         }
 
-        setInputs(answersPossible.map(({ name }) => (
+        setInputs(answersPossible.map(({ label, name }) => (
             <label>
-                {name}: {' '}
-                <input name={name} type="text" />
+                {label}: {' '}
+                <input name={name} id={name} type="text" />
                 <br />
             </label>
         ))
         )
     }
 
-    const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
-
     async function handleSubmit(e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    const addPrompt = await fetch('/api/prompt',
+        for (let i = 0; i < numOfAnswers; i++) {
+            let blah = i + 1;
+            answers.push(document.getElementById('Ans' + blah).value)
+        }
+        
+        const addPrompt = await fetch('/api/prompt',
             {
                 body: JSON.stringify(
                 {
@@ -70,7 +72,7 @@ export default function Course( { course } ) {
                     'Content-Type': 'application/json',
                 }
             })
-    }
+        }
     
     return (
         <Layout>
@@ -86,9 +88,11 @@ export default function Course( { course } ) {
                     </label>
                     <label>
                         Answer No. 1: {' '}
-                        <input name="Answer No. 1" type="text" />
+                        <input name="Ans1" id= "Ans1" type="text" />
+                        {' '}
                     </label> 
-                    <input name="numOfAnswers" type="button" value="+" onClick={handleChange} />
+                    <input name="numOfAnswers" type="button" value="+" onClick={() => { setNum(numOfAnswers +1); handleChange() }} />
+                    <input name="numOfAnswers" type="button" value="-" onClick={() => { setNum(numOfAnswers -1); handleChange() }} />
                     <br />
                     {answerInputs} 
                     <input type="submit" value="Add Prompt" />
