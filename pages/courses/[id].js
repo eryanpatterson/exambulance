@@ -27,12 +27,14 @@ export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
     const [numOfAnswers, setNum] = useState(1);
     const [answerInputs, setInputs] = useState('');
+    const [selector, setSelector] = useState('');
+    const [correctAnswer, setCorrect] = useState('');
     const answers = [];
 
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
-    
+
     useEffect(() => { for (let i = 1; i < numOfAnswers; i++) {
-        answersPossible.push({ label: 'Answer ' + (i+2), name: 'Ans' + (i+2)})
+        answersPossible.push({ label: 'Answer ' + i, name: 'Ans' + i})
     } 
         setInputs(answersPossible.map(({ label, name }) => (
             <label>
@@ -42,6 +44,22 @@ export default function Course( { course } ) {
             </label>
         ))
     )
+        setSelector(
+            <div value={correctAnswer} onChange={(e) => setCorrect(e.target.value)}>
+            Correct Answer: {' '}
+                {answersPossible.map( ({ label, name }) => (
+                <label>
+                    {label} : {' '}
+                    <input name={name} type="radio" value={name}></input>
+                    {' '}            
+                </label>
+            
+                )
+
+            )}
+            </div> 
+        ) 
+        
 
 
     }, [numOfAnswers])
@@ -51,8 +69,8 @@ export default function Course( { course } ) {
     async function handleSubmit(e) {
         e.preventDefault();
 
-        for (let i = 0; i < numOfAnswers; i++) {
-            let ans = i + 1;
+        for (let i = 1; i < numOfAnswers; i++) {
+            let ans = i;
             answers.push(document.getElementById('Ans' + ans).value)
         }
         
@@ -62,7 +80,8 @@ export default function Course( { course } ) {
                 {
                     course: course[0].code,
                     question: question,
-                    answers: answers
+                    answers: answers,
+                    correct: correctAnswer
                 }),
 
                 method: 'POST',
@@ -84,16 +103,11 @@ export default function Course( { course } ) {
                         <input name="question" type="text" value={question} onChange={(e) => setQuestion(e.target.value)} />
                         {' '}
                     </label>
-                    <label>
-                        Answer No. 1: {' '}
-                        <input name="Ans1" id= "Ans1" type="text" />
-                        {' '}
-                    </label> 
+                    <br />
+                    {answerInputs}
                     <input name="numOfAnswers" type="button" value="+" onClick={() => setNum(numOfAnswers +1)} />
                     <input name="numOfAnswers" type="button" value="-" onClick={() => setNum(numOfAnswers -1)} />
-                    <h2>{numOfAnswers}</h2>
-                    <br />
-                    {answerInputs} 
+                    {selector}
                     <input type="submit" value="Add Prompt" />
                 </form>
             </div>
