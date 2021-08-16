@@ -1,7 +1,7 @@
 import { findCourses } from "../../lib/user";
 import Layout from "../../components/layout";
 import Link from "next/link"
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function getServerSideProps({ params }) {
     
@@ -31,15 +31,9 @@ export default function Course( { course } ) {
 
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
     
-    function handleChange(e) {
-        
-
-        const answersPossible = [];
-        
-        for (let i = 0; i < numOfAnswers; i++) {
-            answersPossible.push({ label: 'Answer ' + (i+2), name: 'Ans' + (i+2)})
-        }
-
+    useEffect(() => { for (let i = 1; i < numOfAnswers; i++) {
+        answersPossible.push({ label: 'Answer ' + (i+2), name: 'Ans' + (i+2)})
+    } 
         setInputs(answersPossible.map(({ label, name }) => (
             <label>
                 {label}: {' '}
@@ -47,15 +41,19 @@ export default function Course( { course } ) {
                 <br />
             </label>
         ))
-        )
-    }
+    )
+
+
+    }, [numOfAnswers])
+    
+    const answersPossible = [];
 
     async function handleSubmit(e) {
         e.preventDefault();
 
         for (let i = 0; i < numOfAnswers; i++) {
-            let blah = i + 1;
-            answers.push(document.getElementById('Ans' + blah).value)
+            let ans = i + 1;
+            answers.push(document.getElementById('Ans' + ans).value)
         }
         
         const addPrompt = await fetch('/api/prompt',
@@ -91,8 +89,9 @@ export default function Course( { course } ) {
                         <input name="Ans1" id= "Ans1" type="text" />
                         {' '}
                     </label> 
-                    <input name="numOfAnswers" type="button" value="+" onClick={() => { setNum(numOfAnswers +1); handleChange() }} />
-                    <input name="numOfAnswers" type="button" value="-" onClick={() => { setNum(numOfAnswers -1); handleChange() }} />
+                    <input name="numOfAnswers" type="button" value="+" onClick={() => setNum(numOfAnswers +1)} />
+                    <input name="numOfAnswers" type="button" value="-" onClick={() => setNum(numOfAnswers -1)} />
+                    <h2>{numOfAnswers}</h2>
                     <br />
                     {answerInputs} 
                     <input type="submit" value="Add Prompt" />
