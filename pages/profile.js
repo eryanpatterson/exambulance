@@ -1,11 +1,12 @@
 import Layout from "../components/layout";
 import { getLoginSession } from "../lib/auth";
-import { findUser } from "../lib/user";
+import { findMyCourses, findUser } from "../lib/user";
 import { useState } from "react";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
+    const myCourses = (session && (await findMyCourses(session.email)))
     if (user.role === 'instructor' ) {
         return {
             redirect: {
@@ -15,17 +16,18 @@ export async function getServerSideProps(context) {
         }
     }
     
-    return { props: { user } }
+    return { props: { user, myCourses } }
 }
 
-function Profile({ user }) {
+function Profile({ user, myCourses }) {
     const [course, setCourse] = useState('Course Code')
     
     const greeting = 'Welcome, ' + user.first
+    console.log(myCourses);
     
-    const registerForCourse = (e) => {
+    async function registerForCourse(e) {
         e.preventDefault();
-        const addCourse = fetch('/api/addCourse', 
+        const addCourse = await fetch('/api/addCourse', 
         {
             body: JSON.stringify(
             {
@@ -39,7 +41,7 @@ function Profile({ user }) {
             }
         })
 
-        if (res.status === 200) {
+        if (addCourse.status === 200) {
             alert('Course added!')
         } else {
             alert('There was an error.')
@@ -65,7 +67,9 @@ function Profile({ user }) {
             <button>
                 <a href="/api/logout">Logout</a>
             </button>
-            
+            <ul>
+                { myCourses.mycourses.map(c => <li>{c}</li>)}
+            </ul>
         </Layout>
     )
 }
