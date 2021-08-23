@@ -26,7 +26,6 @@ const authenticate = (method, req, res) =>
                 const user = await authenticate('local', req, res)
 
                 const session = { ...user }
-                console.log('heh')
                 await setLoginSession(res, session)
 
                 res.status(200).send({ done: true })

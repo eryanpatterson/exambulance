@@ -1,6 +1,5 @@
 import '../styles/globals.css'
 import { useUser } from '../lib/hooks'
-//import Router from 'next/router'
 
 function MyApp({ Component, pageProps }) {
 
