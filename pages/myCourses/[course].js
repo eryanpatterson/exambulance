@@ -1,13 +1,15 @@
 import { findCourses } from "../../lib/user";
 import Layout from "../../components/layout";
-import Link from "next/link"
+import Link from "next/link";
+import { getPrompts } from "../../lib/prompts"; 
 
 export async function getServerSideProps({ params }) {
-
+    const code = params.course
+    
+    const coursePrompts = await getPrompts(code);
     let course = ''
     
     try { 
-        const code = params.course
         course = await findCourses('code', code)
         
     } catch (error) {
@@ -16,19 +18,32 @@ export async function getServerSideProps({ params }) {
     
     return {
         props: {
-            course
+            course, coursePrompts
         }
     }
 }
 
 
-export default function Course( { course } ) {
+export default function Course( { course, coursePrompts } ) {
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
-
+    
+    const showPrompts = coursePrompts.map( obj => (
+        <li>
+            <h4>{obj.question}</h4>
+            <ol>
+                {obj.answers.map(ans => <li>{ans}</li>)}
+            </ol>
+        </li>
+    )
+        
+    )
     return (
         <Layout>
             <div>{courseInfo}</div>
             <Link href="../profile"><a>Back</a></Link>
+            <div>
+                {showPrompts}
+            </div>
         </Layout>
     )
 }

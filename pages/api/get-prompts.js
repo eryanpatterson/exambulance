@@ -1,10 +1,10 @@
-import { addPrompt } from "../../lib/prompts"
+import { getPrompts } from '../../lib/prompts'
 
-export default async function newPrompt(req, res) {
+export default async function fetchPrompts(req, res) {
     const data = req.body
 
     try {
-        addPrompt(data);
+        getPrompts(data.code);
         res.status(200).send({ done: true })
     } catch {
         console.error(error)
