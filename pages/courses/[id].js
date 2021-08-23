@@ -1,10 +1,23 @@
-import { findCourses } from "../../lib/user";
+import { findUser, findCourses } from "../../lib/user";
+import { getLoginSession } from "../../lib/auth";
 import Layout from "../../components/layout";
 import Link from "next/link"
 import { useState, useEffect } from "react";
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps(context) {
+    const params = context.params;
+    const session = await getLoginSession(context.req)
+    const user = (session && (await findUser(session.email))) ?? null
     
+    if (user.role !== 'instructor') {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '../myCourses/' + params.id
+            }
+        }
+    }
+
     let course = ''
     
     try { 
@@ -94,7 +107,7 @@ export default function Course( { course } ) {
     return (
         <Layout>
             <div>{courseInfo}</div>
-            <Link href="../profile"><a>Back</a></Link>
+            <Link href="../teacherProfile"><a>Back</a></Link>
             <div>
                 <h2>New Prompt</h2>
                 <form onSubmit={handleSubmit}>

@@ -1,4 +1,5 @@
 import Layout from "../components/layout";
+import Link from 'next/link';
 import { getLoginSession } from "../lib/auth";
 import { findMyCourses, findUser } from "../lib/user";
 import { useState } from "react";
@@ -68,7 +69,7 @@ function Profile({ user, myCourses }) {
                 <a href="/api/logout">Logout</a>
             </button>
             <ul>
-                { myCourses.mycourses.map(c => <li>{c}</li>)}
+                { myCourses.mycourses.map(course => <li><Link href={'/courses/' + course}><a><strong>{course}</strong></a></Link></li>) }
             </ul>
         </Layout>
     )
