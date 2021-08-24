@@ -63,7 +63,7 @@ export default function Course( { course } ) {
                 {answersPossible.map( ({ label, name }) => (
                 <label>
                     {label} : {' '}
-                    <input name={name} type="radio" value={name}></input>
+                    <input name={name} type="radio" value={name} />
                     {' '}            
                 </label>
             

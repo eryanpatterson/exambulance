@@ -28,12 +28,19 @@ export default function Course( { course, coursePrompts } ) {
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
     
     const showPrompts = coursePrompts.map( obj => (
-        <li>
+        <form>
             <h4>{obj.question}</h4>
             <ol>
-                {obj.answers.map(ans => <li>{ans}</li>)}
+                {obj.answers.map(ans => 
+                <li>
+                    <label>
+                        <input name={ans} type="radio" value={ans} />
+                        {'  '} {ans}
+                    </label>
+                </li>
+                )}
             </ol>
-        </li>
+        </form>
     )
         
     )
