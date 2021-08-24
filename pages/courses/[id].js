@@ -9,6 +9,14 @@ export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
     
+    if (user == null) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '../login'
+            }
+        }
+    }
     if (user.role !== 'instructor') {
         return {
             redirect: {

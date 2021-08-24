@@ -10,7 +10,12 @@ export async function getServerSideProps(context) {
     const user = (session && (await findUser(session.email))) ?? null
     
     if (user == null) {
-        Router.push('/login')
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/login'
+            }
+        }
     }
 
     return { props: { user } }

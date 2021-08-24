@@ -1,7 +1,8 @@
 import { findCourses } from "../../lib/user";
 import Layout from "../../components/layout";
 import Link from "next/link";
-import { getPrompts } from "../../lib/prompts"; 
+import { getPrompts } from "../../lib/prompts";
+import { useUser } from '../../lib/hooks'
 
 export async function getServerSideProps({ params }) {
     const code = params.course
@@ -25,6 +26,8 @@ export async function getServerSideProps({ params }) {
 
 
 export default function Course( { course, coursePrompts } ) {
+    useUser({ redirectTo: '/login', redirectIfFound: false })
+    
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
     
     const showPrompts = coursePrompts.map( obj => (

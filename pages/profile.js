@@ -8,6 +8,14 @@ export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
     const myCourses = (session && (await findMyCourses(session.email)))
+    if (user == null) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/login'
+            }
+        }
+    }
     if (user.role === 'instructor' ) {
         return {
             redirect: {
@@ -24,7 +32,6 @@ function Profile({ user, myCourses }) {
     const [course, setCourse] = useState('Course Code')
     
     const greeting = 'Welcome, ' + user.first
-    console.log(myCourses);
     
     async function registerForCourse(e) {
         e.preventDefault();
