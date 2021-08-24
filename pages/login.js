@@ -19,20 +19,21 @@ const Login = () => {
     if (errorMsg) setErrorMsg('')
 
     const body = {
-      email: e.target.email.value,
-      password: e.target.password.value,
+      email: email,
+      password: password,
     }
 
     try {
       const res = await fetch('/api/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
       })
       if (res.status === 200) {
         Router.push('/profile')
       } else {
         throw new Error(await res.text())
+          .then(setErrorMsg(Error))
       }
     } catch (error) {
       console.error('An unexpected error occurred: ', error)
