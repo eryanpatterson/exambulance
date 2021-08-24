@@ -2,7 +2,7 @@ import Layout from "../components/layout";
 import Link from 'next/link';
 import { getLoginSession } from "../lib/auth";
 import { findMyCourses, findUser } from "../lib/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
@@ -32,14 +32,16 @@ function Profile({ user, myCourses }) {
     const [course, setCourse] = useState('Course Code')
     const [courseList, setList] = useState('Add some courses to see them here!')
 
-    const greeting = 'Welcome, ' + user.first
+    const greeting = 'Welcome, ' + user.first;
     
-    myCourses.mycourses && setList(myCourses.mycourses.map(course => 
+    useEffect(() => {
+        myCourses.mycourses && setList(myCourses.mycourses.map(course => 
         <li key={course}>
             <Link href={'/courses/' + course}>
                 <a><strong>{course}</strong></a>
             </Link>
         </li>));
+    })
 
     async function registerForCourse(e) {
         e.preventDefault();
