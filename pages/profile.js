@@ -30,9 +30,17 @@ export async function getServerSideProps(context) {
 
 function Profile({ user, myCourses }) {
     const [course, setCourse] = useState('Course Code')
-    
+    const [courseList, setList] = useState('Add some courses to see them here!')
+
     const greeting = 'Welcome, ' + user.first
     
+    myCourses.mycourses && setList(myCourses.mycourses.map(course => 
+        <li key={course}>
+            <Link href={'/courses/' + course}>
+                <a><strong>{course}</strong></a>
+            </Link>
+        </li>));
+
     async function registerForCourse(e) {
         e.preventDefault();
         const addCourse = await fetch('/api/addCourse', 
@@ -76,7 +84,7 @@ function Profile({ user, myCourses }) {
                 <Link href="/api/logout"><a>Logout</a></Link>
             </button>
             <ul>
-                { myCourses.mycourses.map(course => <li key={course}><Link href={'/courses/' + course}><a><strong>{course}</strong></a></Link></li>) }
+                {courseList}
             </ul>
         </Layout>
     )
