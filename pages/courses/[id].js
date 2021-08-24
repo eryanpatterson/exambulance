@@ -50,7 +50,7 @@ export default function Course( { course } ) {
         answersPossible.push({ label: 'Answer ' + i, name: 'Ans' + i})
     } 
         setInputs(answersPossible.map(({ label, name }) => (
-            <label>
+            <label key={name}>
                 {label}: {' '}
                 <input name={name} id={name} type="text" />
                 <br />
@@ -61,7 +61,7 @@ export default function Course( { course } ) {
             <div value={correctAnswer} onChange={(e) => setCorrect(e.target.value)}>
             Correct Answer: {' '}
                 {answersPossible.map( ({ label, name }) => (
-                <label>
+                <label key={name}>
                     {label} : {' '}
                     <input name={name} type="radio" value={name} />
                     {' '}            

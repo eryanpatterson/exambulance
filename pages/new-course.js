@@ -16,7 +16,7 @@ export async function getServerSideProps(context) {
     return { props: { user } }
 }
 
-export default function addCourse( {user} ) {
+export default function AddCourse( {user} ) {
     const [name, setName] = useState('');
     const [code, setCode] = useState('');
 

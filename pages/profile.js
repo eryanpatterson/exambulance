@@ -66,10 +66,10 @@ function Profile({ user, myCourses }) {
                 </form>
             </div>        
             <button>
-                <a href="/api/logout">Logout</a>
+                <Link href="/api/logout"><a>Logout</a></Link>
             </button>
             <ul>
-                { myCourses.mycourses.map(course => <li><Link href={'/courses/' + course}><a><strong>{course}</strong></a></Link></li>) }
+                { myCourses.mycourses.map(course => <li key={course}><Link href={'/courses/' + course}><a><strong>{course}</strong></a></Link></li>) }
             </ul>
         </Layout>
     )
