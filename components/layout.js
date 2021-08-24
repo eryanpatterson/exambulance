@@ -3,7 +3,7 @@ import utilStyles from '../styles/utils.module.css'
 
 export default function Layout({ children }) {
     return (
-        <div>
+        <div className={utilStyles.container}>
             <header>
                 <Image
                     priority
