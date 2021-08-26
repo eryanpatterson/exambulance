@@ -21,7 +21,7 @@ export async function getServerSideProps(context) {
 
 function teacherProfile({ user, courses }) {
     
-    const courseList = courses.map(obj => (<li><Link href={'/courses/' + obj.code}><a><strong>{obj.code}</strong></a></Link> {obj.name}</li>) )
+    const courseList = courses.map(obj => (<li key={obj.code}><Link href={'/courses/' + obj.code}><a><strong>{obj.code}</strong></a></Link> {obj.name}</li>) )
 
     let greeting = ''
     greeting = 'Welcome, Professor ' + user.last
@@ -33,7 +33,7 @@ function teacherProfile({ user, courses }) {
                     <p>{greeting}!</p>
                 </div>
             <button>
-                <a href="/api/logout">Logout</a>
+                <Link href="/api/logout"><a>Logout</a></Link>
             </button>
             {user.role == "instructor" && (
             <div>

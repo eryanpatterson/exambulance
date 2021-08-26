@@ -2,12 +2,20 @@ import Layout from "../components/layout";
 import Link from 'next/link';
 import { getLoginSession } from "../lib/auth";
 import { findMyCourses, findUser } from "../lib/user";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
     const user = (session && (await findUser(session.email))) ?? null
     const myCourses = (session && (await findMyCourses(session.email)))
+    if (user == null) {
+        return {
+            redirect: {
+                permanent: false,
+                destination: '/login'
+            }
+        }
+    }
     if (user.role === 'instructor' ) {
         return {
             redirect: {
@@ -22,10 +30,19 @@ export async function getServerSideProps(context) {
 
 function Profile({ user, myCourses }) {
     const [course, setCourse] = useState('Course Code')
+    const [courseList, setList] = useState('Add some courses to see them here!')
+
+    const greeting = 'Welcome, ' + user.first;
     
-    const greeting = 'Welcome, ' + user.first
-    console.log(myCourses);
-    
+    useEffect(() => {
+        myCourses.mycourses && setList(myCourses.mycourses.map(course => 
+        <li key={course}>
+            <Link href={'/courses/' + course}>
+                <a><strong>{course}</strong></a>
+            </Link>
+        </li>));
+    })
+
     async function registerForCourse(e) {
         e.preventDefault();
         const addCourse = await fetch('/api/addCourse', 
@@ -66,10 +83,10 @@ function Profile({ user, myCourses }) {
                 </form>
             </div>        
             <button>
-                <a href="/api/logout">Logout</a>
+                <Link href="/api/logout"><a>Logout</a></Link>
             </button>
             <ul>
-                { myCourses.mycourses.map(course => <li><Link href={'/courses/' + course}><a><strong>{course}</strong></a></Link></li>) }
+                {courseList}
             </ul>
         </Layout>
     )
