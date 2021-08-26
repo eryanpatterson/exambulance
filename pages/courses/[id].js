@@ -44,6 +44,7 @@ export async function getServerSideProps(context) {
 }
 
 // Need to make changes so that prompt form refreshes when submitted and the answers array is set to empty.
+// Need to handle error in case of courses with no students
 
 export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
@@ -72,7 +73,7 @@ export default function Course( { course } ) {
                 {answersPossible.map( ({ label, name }) => (
                 <label key={name}>
                     {label} : {' '}
-                    <input name={name} type="radio" value={name} />
+                    <input name='Correct' type="radio" value={name} />
                     {' '}            
                 </label>
             
@@ -90,7 +91,6 @@ export default function Course( { course } ) {
 
     async function handleSubmit(e) {
         e.preventDefault();
-
         for (let i = 1; i < numOfAnswers; i++) {
             let ans = i;
             answers.push(document.getElementById('Ans' + ans).value)
@@ -110,8 +110,12 @@ export default function Course( { course } ) {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            }).then(() => answers = [])
+            })
+        
+        if (addPrompt.status === 500) {
+            alert("An error occurred.")
         }
+    }
     
     return (
         <Layout>

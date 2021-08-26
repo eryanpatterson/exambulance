@@ -9,7 +9,6 @@ export async function getServerSideProps(context) {
     const { email } = await getLoginSession(context.req)
     const params = context.params;
     const code = params.course
-    
     const coursePrompts = await getPrompts(code, email);
 
     let course = ''
@@ -23,30 +22,47 @@ export async function getServerSideProps(context) {
     
     return {
         props: {
-            course, coursePrompts
+            course, coursePrompts, email
         }
     }
 }
 
 
-export default function Course( { course, coursePrompts } ) {
+export default function Course( { course, coursePrompts, email } ) {
     useUser({ redirectTo: '/login', redirectIfFound: false })
     
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
+
+    function handleSubmit(e, question) {
+        e.preventDefault();
+        
+        const submitAnswer = fetch('/api/answer',
+            {
+                body: JSON.stringify(
+                {
+                    course: course[0].code,
+                    student: email,
+                    question: question,
+                    answer: e.target.answer.value
+                }),
+
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+        })
+    }
     
     const showPrompts = coursePrompts.map( obj => (
-        <form key={obj.question}>
+        <form key={obj.question} onSubmit={(e) => handleSubmit(e, obj.question)}>
             <h4>{obj.question}</h4>
-            <ol>
-                {obj.answers.map(ans => 
-                <li key={ans}>
-                    <label>
-                        <input name={ans} type="radio" value={ans} />
-                        {'  '} {ans}
-                    </label>
-                </li>
+            {obj.answers.map(ans => 
+                <label key={ans}>
+                    <input name="answer" type="radio" value={ans} />
+                    {'  '} {ans}
+                </label>
                 )}
-            </ol>
+            <input type='submit' value='Submit' />
         </form>
     )
         
@@ -58,6 +74,9 @@ export default function Course( { course, coursePrompts } ) {
             <div>
                 {showPrompts}
             </div>
+            <form onSubmit={handleSubmit}>
+                <input type="submit" value='submit' />
+            </form>
         </Layout>
     )
 }
