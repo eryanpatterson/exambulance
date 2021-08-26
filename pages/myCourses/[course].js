@@ -74,9 +74,6 @@ export default function Course( { course, coursePrompts, email } ) {
             <div>
                 {showPrompts}
             </div>
-            <form onSubmit={handleSubmit}>
-                <input type="submit" value='submit' />
-            </form>
         </Layout>
     )
 }
