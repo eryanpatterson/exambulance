@@ -43,6 +43,7 @@ export async function getServerSideProps(context) {
     }
 }
 
+// Need to make changes so that prompt form refreshes when submitted and the answers array is set to empty.
 
 export default function Course( { course } ) {
     const [question, setQuestion] = useState('');
@@ -50,7 +51,7 @@ export default function Course( { course } ) {
     const [answerInputs, setInputs] = useState('');
     const [selector, setSelector] = useState('');
     const [correctAnswer, setCorrect] = useState('');
-    const answers = [];
+    let answers = [];
 
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
 
@@ -94,7 +95,7 @@ export default function Course( { course } ) {
             let ans = i;
             answers.push(document.getElementById('Ans' + ans).value)
         }
-        
+
         const addPrompt = await fetch('/api/prompt',
             {
                 body: JSON.stringify(
@@ -109,7 +110,7 @@ export default function Course( { course } ) {
                 headers: {
                     'Content-Type': 'application/json',
                 }
-            })
+            }).then(() => answers = [])
         }
     
     return (

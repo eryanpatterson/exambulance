@@ -3,11 +3,15 @@ import Layout from "../../components/layout";
 import Link from "next/link";
 import { getPrompts } from "../../lib/prompts";
 import { useUser } from '../../lib/hooks'
+import { getLoginSession } from "../../lib/auth";
 
-export async function getServerSideProps({ params }) {
+export async function getServerSideProps(context) {
+    const { email } = await getLoginSession(context.req)
+    const params = context.params;
     const code = params.course
     
-    const coursePrompts = await getPrompts(code);
+    const coursePrompts = await getPrompts(code, email);
+
     let course = ''
     
     try { 
