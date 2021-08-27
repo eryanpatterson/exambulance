@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getPrompts } from "../../lib/prompts";
 import { useUser } from '../../lib/hooks'
 import { getLoginSession } from "../../lib/auth";
+import styles from "../../styles/course.module.css"
 
 export async function getServerSideProps(context) {
     const { email } = await getLoginSession(context.req)
@@ -57,7 +58,7 @@ export default function Course( { course, coursePrompts, email } ) {
         <form key={obj.question} onSubmit={(e) => handleSubmit(e, obj.question)}>
             <h4>{obj.question}</h4>
             {obj.answers.map(ans => 
-                <label key={ans}>
+                <label key={ans} className={styles.answer}>
                     <input name="answer" type="radio" value={ans} />
                     {'  '} {ans}
                 </label>

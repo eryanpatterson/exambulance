@@ -18,13 +18,10 @@ export default async function newPrompt(req, res) {
             this.student = student;
         }
 
-        console.log(studentList)
-
         const promptSet = studentList.map(student => 
                 new Prompt(data, student)    
         );
 
-        console.log(promptSet)
 
         promptSet.push(data);
 
