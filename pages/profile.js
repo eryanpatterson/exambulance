@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { getLoginSession } from "../lib/auth";
 import { findMyCourses, findUser } from "../lib/user";
 import { useState, useEffect } from "react";
+import { checkPrompts } from "../lib/prompts";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
@@ -24,23 +25,27 @@ export async function getServerSideProps(context) {
             }
         }
     }
+
+    const newPrompts = await checkPrompts(session.email)
+    const promptCourses = newPrompts.map(obj => obj.course)
     
-    return { props: { user, myCourses } }
+    return { props: { user, myCourses, promptCourses } }
 }
 
-function Profile({ user, myCourses }) {
+function Profile({ user, myCourses, promptCourses }) {
     const [course, setCourse] = useState('Course Code')
     const [courseList, setList] = useState('Add some courses to see them here!')
 
     const greeting = 'Welcome, ' + user.first;
     
     useEffect(() => {
-        myCourses.mycourses && setList(myCourses.mycourses.map(course => 
-        <li key={course}>
-            <Link href={'/courses/' + course}>
-                <a><strong>{course}</strong></a>
-            </Link>
-        </li>));
+        myCourses.mycourses && setList(myCourses.mycourses.map(course =>  
+            <li key={course}>
+                <Link href={'/courses/' + course}>
+                    <a><strong>{course}</strong></a>
+                </Link>
+                {promptCourses.includes(course) && <p>New prompts available!</p>}
+            </li>));
     })
 
     async function registerForCourse(e) {
