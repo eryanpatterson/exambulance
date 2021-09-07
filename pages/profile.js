@@ -7,9 +7,9 @@ import { checkPrompts } from "../lib/prompts";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
-    const user = (session && (await findUser(session.email))) ?? null
+    const user = (session && (await findUser(session.email)))
     const myCourses = (session && (await findMyCourses(session.email)))
-    if (user == null) {
+    if (!user.email) {
         return {
             redirect: {
                 permanent: false,
