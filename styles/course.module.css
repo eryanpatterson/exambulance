@@ -1,4 +1,11 @@
 
-.answer {
+.hidden {
     color: transparent;
+    display: none;
 }
+
+.visible {
+    color: black;
+}
+
+

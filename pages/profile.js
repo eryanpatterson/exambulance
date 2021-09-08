@@ -26,18 +26,19 @@ export async function getServerSideProps(context) {
         }
     }
 
-    const newPrompts = await checkPrompts(session.email)
+    const newPrompts = await checkPrompts(user.email)
+    console.log(newPrompts)
     const promptCourses = newPrompts.map(obj => obj.course)
     
     return { props: { user, myCourses, promptCourses } }
 }
 
 function Profile({ user, myCourses, promptCourses }) {
-    const [course, setCourse] = useState('Course Code')
-    const [courseList, setList] = useState('Add some courses to see them here!')
+    const [course, setCourse] = useState('');
+    const [courseList, setList] = useState('Add some courses to see them here!');
 
     const greeting = 'Welcome, ' + user.first;
-    
+    console.log(promptCourses)
     useEffect(() => {
         myCourses.mycourses && setList(myCourses.mycourses.map(course =>  
             <li key={course}>
@@ -77,16 +78,17 @@ function Profile({ user, myCourses, promptCourses }) {
             <div>
                 <p>{greeting}!</p>
             </div>
-            <div>
-                <form onSubmit={registerForCourse}>
+            
+            <form onSubmit={registerForCourse}>
                     <label>
                         Register for a course: {'  '}
-                        <input type='text' value={course} onChange={(e) => setCourse(e.target.value)} />
+                        <input name="course" type='text' onChange={(e) => setCourse(e.target.value)} />
+                        
                         {'  '}
                     </label>
                         <input type='submit' value='Add Course' />
-                </form>
-            </div>        
+            </form>
+                    
             <button>
                 <Link href="/api/logout"><a>Logout</a></Link>
             </button>

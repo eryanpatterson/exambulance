@@ -53,7 +53,7 @@ export default function Course( { course } ) {
     const [selector, setSelector] = useState('');
     const [correctAnswer, setCorrect] = useState('');
     let answers = [];
-
+    
     const courseInfo = (<div><h1>{course[0].code}</h1> <h2>{course[0].name}</h2> </div>)
 
     useEffect(() => { for (let i = 1; i < numOfAnswers; i++) {
@@ -91,6 +91,7 @@ export default function Course( { course } ) {
 
     async function handleSubmit(e) {
         e.preventDefault();
+        
         for (let i = 1; i < numOfAnswers; i++) {
             let ans = i;
             answers.push(document.getElementById('Ans' + ans).value)
