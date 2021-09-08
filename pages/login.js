@@ -16,6 +16,10 @@ const Login = () => {
   async function handleSubmit(e) {
     e.preventDefault()
 
+    if (!email || !password) {
+      setErrorMsg('Email and password required.');
+      throw 'Email and a password required.'      
+    }
     if (errorMsg) setErrorMsg('')
 
     const body = {

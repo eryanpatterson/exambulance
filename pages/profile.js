@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { getLoginSession } from "../lib/auth";
 import { findMyCourses, findUser } from "../lib/user";
 import { useState, useEffect } from "react";
+import { checkPrompts } from "../lib/prompts";
 
 export async function getServerSideProps(context) {
     const session = await getLoginSession(context.req)
-    const user = (session && (await findUser(session.email))) ?? null
+    const user = (session && (await findUser(session.email)))
     const myCourses = (session && (await findMyCourses(session.email)))
-    if (user == null) {
+    if (!user.email) {
         return {
             redirect: {
                 permanent: false,
@@ -24,23 +25,28 @@ export async function getServerSideProps(context) {
             }
         }
     }
+
+    const newPrompts = await checkPrompts(user.email)
+    console.log(newPrompts)
+    const promptCourses = newPrompts.map(obj => obj.course)
     
-    return { props: { user, myCourses } }
+    return { props: { user, myCourses, promptCourses } }
 }
 
-function Profile({ user, myCourses }) {
-    const [course, setCourse] = useState('Course Code')
-    const [courseList, setList] = useState('Add some courses to see them here!')
+function Profile({ user, myCourses, promptCourses }) {
+    const [course, setCourse] = useState('');
+    const [courseList, setList] = useState('Add some courses to see them here!');
 
     const greeting = 'Welcome, ' + user.first;
-    
+    console.log(promptCourses)
     useEffect(() => {
-        myCourses.mycourses && setList(myCourses.mycourses.map(course => 
-        <li key={course}>
-            <Link href={'/courses/' + course}>
-                <a><strong>{course}</strong></a>
-            </Link>
-        </li>));
+        myCourses.mycourses && setList(myCourses.mycourses.map(course =>  
+            <li key={course}>
+                <Link href={'/courses/' + course}>
+                    <a><strong>{course}</strong></a>
+                </Link>
+                {promptCourses.includes(course) && <p>New prompts available!</p>}
+            </li>));
     })
 
     async function registerForCourse(e) {
@@ -72,16 +78,17 @@ function Profile({ user, myCourses }) {
             <div>
                 <p>{greeting}!</p>
             </div>
-            <div>
-                <form onSubmit={registerForCourse}>
+            
+            <form onSubmit={registerForCourse}>
                     <label>
                         Register for a course: {'  '}
-                        <input type='text' value={course} onChange={(e) => setCourse(e.target.value)} />
+                        <input name="course" type='text' onChange={(e) => setCourse(e.target.value)} />
+                        
                         {'  '}
                     </label>
                         <input type='submit' value='Add Course' />
-                </form>
-            </div>        
+            </form>
+                    
             <button>
                 <Link href="/api/logout"><a>Logout</a></Link>
             </button>
